@@ -23,9 +23,7 @@ jobs:
         with:
           context: ./src
           push: true
-          tags:
-            - ghcr.io/jimpaine/chain-go:0.1.${{ github.RUN_NUMBER }}
-            - ghcr.io/jimpaine/chain-go:main
+          tags: ghcr.io/jimpaine/chain-go:0.1.${{ github.RUN_NUMBER }}
 
       - run: |
             gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
