@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -20,6 +21,7 @@ func main() {
 
 func handle(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Content-Type", "application/json")
 
 	responseMessage := os.Getenv("RESPONSE_MESSAGE")
 	if len(responseMessage) == 0 {
@@ -32,22 +34,18 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	if len(nextHop) > 0 {
 		log.Println("nextHop value:" + nextHop)
 		resp, err := http.Get(nextHop)
+
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		defer resp.Body.Close()
 		body, err := io.ReadAll(resp.Body)
+
 		if err != nil {
 			log.Fatal(err)
 		}
-		nestedMessage = string(body[:])
+		nestedMessage = fmt.Sprintf(", \"nestedResponse\": {\"response\":\"%s\"}", string(body[:]))
 	}
-
-	w.Header().Add("Content-Type", "application/json")
-	io.WriteString(w, `{"response":"`+responseMessage+`"`)
-	if len(nestedMessage) > 0 {
-		io.WriteString(w, `, "nestedResponse":"{"response":"`+nestedMessage+`"}}`)
-	} else {
-		io.WriteString(w, `}`)
-	}
+	io.WriteString(w, fmt.Sprintf("{\"response\":\"%s\"%s}", responseMessage, nestedMessage))
 }
