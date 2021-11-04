@@ -1,0 +1,36 @@
+name: release
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  push-to-packages:
+    name: Push to Packages
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: docker login
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v2.7.0
+        with:
+          context: ./src
+          push: true
+          tags:
+            - ghcr.io/jimpaine/chain-go:0.1.${{ github.RUN_NUMBER }}
+            - ghcr.io/jimpaine/chain-go:main
+
+      - run: |
+            gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+            gh release create v0.1.${{ github.RUN_NUMBER }} \
+            --title "Chain C# ${{ github.RUN_NUMBER }}" \
+            --notes "```\n$ docker pull ghcr.io/jimpaine/chain-go:0.1.${{ github.RUN_NUMBER }}\n```" \
+            --repo "${{github.SERVER_URL}}/${{github.REPOSITORY}}"
+        shell: bash
