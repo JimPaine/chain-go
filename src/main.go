@@ -44,10 +44,10 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Content-Type", "application/json")
-	io.WriteString(w, "{\"response\":\""+responseMessage+"\"")
+	io.WriteString(w, `{"response":"`+responseMessage+`"`)
 	if len(nestedMessage) > 0 {
-		io.WriteString(w, ", \"nestedResponse\":\"{\"response\":\""+nestedMessage+"\"}}")
+		io.WriteString(w, `, "nestedResponse":"{"response":"`+nestedMessage+`"}}`)
 	} else {
-		io.WriteString(w, "}")
+		io.WriteString(w, `}`)
 	}
 }
