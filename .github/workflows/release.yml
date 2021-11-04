@@ -28,7 +28,7 @@ jobs:
       - run: |
             gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
             gh release create v0.1.${{ github.RUN_NUMBER }} \
-            --title "Chain C# ${{ github.RUN_NUMBER }}" \
+            --title "Chain GO ${{ github.RUN_NUMBER }}" \
             --notes "```\n$ docker pull ghcr.io/jimpaine/chain-go:0.1.${{ github.RUN_NUMBER }}\n```" \
             --repo "${{github.SERVER_URL}}/${{github.REPOSITORY}}"
         shell: bash
