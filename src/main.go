@@ -29,6 +29,7 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	nextHop := os.Getenv("NEXT_HOP")
+	version := os.Getenv("VERSION")
 	nestedMessage := ""
 
 	if len(nextHop) > 0 {
@@ -47,5 +48,5 @@ func handle(w http.ResponseWriter, r *http.Request) {
 		}
 		nestedMessage = fmt.Sprintf(", \"nestedResponse\": {\"response\":\"%s\"}", string(body[:]))
 	}
-	io.WriteString(w, fmt.Sprintf("{\"response\":\"%s\"%s}", responseMessage, nestedMessage))
+	io.WriteString(w, fmt.Sprintf("{\"response\":\"%s - version: %s\"%s}", responseMessage, version, nestedMessage))
 }
